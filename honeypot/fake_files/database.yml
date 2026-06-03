@@ -1,0 +1,9 @@
+production:
+  adapter: mysql2
+  host: prod-db-01.internal.corp.com
+  database: rails_production
+  username: rails_app
+  password: "Pr0dDB!S3cur3#2024"
+  pool: 10
+  timeout: 5000
+  reconnect: true

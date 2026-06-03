@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="5">
+  <title>Project Mirage</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f1a;
+      --surface: #111827;
+      --surface2: #1a2234;
+      --border: #1e2d45;
+      --border2: #2a3f5f;
+      --red: #ff3b3b;
+      --red-soft: #ff6b6b;
+      --red-dim: #ff3b3b22;
+      --amber: #ffb347;
+      --green: #39ff8f;
+      --green-dim: #39ff8f15;
+      --text: #c8d8f0;
+      --text-dim: #5a7a9a;
+      --text-bright: #e8f4ff;
+      --mono: 'Share Tech Mono', monospace;
+      --sans: 'Rajdhani', sans-serif;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:var(--bg); color:var(--text); font-family:var(--mono); padding:24px; min-height:100vh; }
+    body::before {
+      content:''; position:fixed; inset:0;
+      background-image:
+        linear-gradient(rgba(30,60,100,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30,60,100,0.04) 1px, transparent 1px);
+      background-size:40px 40px; pointer-events:none; z-index:0;
+    }
+    .content { position:relative; z-index:1; }
+
+    .header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--border); }
+    .logo-area { display:flex; align-items:center; gap:16px; }
+    .brand-name { font-family:var(--sans); font-size:22px; font-weight:700; color:var(--text-bright); letter-spacing:.2em; text-shadow:0 0 20px rgba(255,59,59,0.4); }
+    .brand-sub { font-size:9px; color:var(--text-dim); letter-spacing:.2em; margin-top:4px; }
+    .header-right { display:flex; align-items:center; gap:16px; }
+    .threat-level { font-size:9px; letter-spacing:.15em; color:var(--amber); border:1px solid #7a4a00; background:#1a0f00; padding:6px 12px; border-radius:4px; display:flex; align-items:center; gap:6px; }
+    .threat-dot { width:6px; height:6px; border-radius:50%; background:var(--amber); animation:blink 1s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .live-badge { display:flex; align-items:center; gap:8px; font-size:9px; color:var(--green); letter-spacing:.15em; border:1px solid #0a4020; background:var(--green-dim); padding:6px 14px; border-radius:4px; }
+    .pulse { width:7px; height:7px; border-radius:50%; background:var(--green); animation:pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(57,255,143,0.4)} 50%{opacity:.6;box-shadow:0 0 0 8px rgba(57,255,143,0)} }
+
+    .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:20px; }
+    .stat { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:18px; position:relative; overflow:hidden; transition:border-color 0.2s,transform 0.2s; }
+    .stat:hover { border-color:var(--border2); transform:translateY(-1px); }
+    .stat::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
+    .stat.red::before { background:linear-gradient(90deg,var(--red),transparent); }
+    .stat.amber::before { background:linear-gradient(90deg,var(--amber),transparent); }
+    .stat.green::before { background:linear-gradient(90deg,var(--green),transparent); }
+    .stat::after { content:''; position:absolute; top:0; right:0; width:0; height:0; border-style:solid; border-width:0 20px 20px 0; }
+    .stat.red::after { border-color:transparent var(--red-dim) transparent transparent; }
+    .stat.amber::after { border-color:transparent #ffb34722 transparent transparent; }
+    .stat.green::after { border-color:transparent var(--green-dim) transparent transparent; }
+    .stat-label { font-size:9px; color:var(--text-dim); letter-spacing:.2em; margin-bottom:10px; text-transform:uppercase; }
+    .stat-value { font-family:var(--sans); font-size:36px; font-weight:700; line-height:1; }
+    .stat-value.red { color:var(--red-soft); text-shadow:0 0 20px rgba(255,59,59,0.3); }
+    .stat-value.amber { color:var(--amber); text-shadow:0 0 20px rgba(255,179,71,0.3); }
+    .stat-value.green { color:var(--green); text-shadow:0 0 20px rgba(57,255,143,0.3); }
+    .stat-sub { font-size:9px; color:var(--text-dim); margin-top:6px; letter-spacing:.1em; }
+
+    .panel { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:18px; margin-bottom:14px; }
+    .panel-title { font-size:9px; letter-spacing:.2em; color:var(--text-dim); margin-bottom:16px; display:flex; align-items:center; gap:10px; text-transform:uppercase; }
+    .panel-title-icon { color:var(--red); font-size:11px; }
+    .panel-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+    .map-container { width:100%; height:280px; background:#0f172a; border-radius:8px; position:relative; overflow:hidden; border:1px solid #1e3a5f; }
+    .scan-line { position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,#ef4444,transparent); animation:scan 3s linear infinite; opacity:0.25; pointer-events:none; z-index:10; }
+    @keyframes scan { 0%{top:0} 100%{top:100%} }
+
+    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+
+    .session-row { display:flex; align-items:center; justify-content:space-between; padding:11px 8px; border-bottom:1px solid var(--border); cursor:pointer; transition:all 0.15s; border-radius:4px; border-left:2px solid transparent; }
+    .session-row:hover { background:var(--surface2); border-left-color:var(--red); padding-left:12px; }
+    .session-row:last-child { border-bottom:none; }
+    .session-ip { font-size:13px; color:var(--red-soft); font-weight:700; letter-spacing:.05em; }
+    .session-time { font-size:10px; color:var(--text-dim); margin-top:3px; }
+    .click-hint { font-size:9px; color:#334; margin-top:2px; letter-spacing:.05em; }
+    .badge { display:inline-block; font-size:8px; padding:3px 8px; border-radius:3px; letter-spacing:.12em; font-weight:700; }
+    .badge-trapped { background:var(--red-dim); color:var(--red-soft); border:1px solid #7f1d1d; }
+
+    .cmd-row { display:flex; gap:12px; padding:7px 8px; border-bottom:1px solid #0f1825; align-items:baseline; border-radius:3px; transition:background 0.1s; }
+    .cmd-row:hover { background:var(--surface2); }
+    .cmd-row:last-child { border-bottom:none; }
+    .cmd-time { font-size:10px; color:var(--text-dim); min-width:68px; flex-shrink:0; }
+    .cmd-prompt { color:var(--red); font-size:12px; flex-shrink:0; }
+    .cmd-text { font-size:12px; color:var(--green); word-break:break-all; }
+
+    .alert-row { display:flex; gap:12px; padding:10px 8px; border-bottom:1px solid var(--border); align-items:flex-start; border-radius:4px; transition:background 0.1s; }
+    .alert-row:hover { background:var(--surface2); }
+    .alert-row:last-child { border-bottom:none; }
+    .alert-dot { width:8px; height:8px; border-radius:50%; margin-top:4px; flex-shrink:0; }
+    .dot-red { background:var(--red); box-shadow:0 0 8px var(--red); }
+    .alert-title { font-size:12px; color:var(--text-bright); font-weight:600; margin-bottom:3px; font-family:var(--sans); }
+    .alert-meta { font-size:9px; color:var(--text-dim); line-height:1.7; letter-spacing:.03em; }
+    .alert-trigger { font-size:9px; color:var(--red-soft); font-weight:600; letter-spacing:.08em; margin-top:3px; }
+
+    .footer { display:flex; justify-content:space-between; align-items:center; margin-top:16px; padding-top:12px; border-top:1px solid var(--border); }
+    .footer-txt { font-size:8px; color:var(--text-dim); letter-spacing:.1em; }
+    .footer-status { display:flex; align-items:center; gap:6px; font-size:8px; color:var(--green); letter-spacing:.1em; }
+    .footer-dot { width:5px; height:5px; border-radius:50%; background:var(--green); }
+
+    .empty { font-size:11px; color:var(--text-dim); padding:20px 0; text-align:center; letter-spacing:.1em; }
+
+    .modal { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.75); z-index:1000; align-items:center; justify-content:center; backdrop-filter:blur(4px); }
+    .modal.active { display:flex; }
+    .modal-box { background:var(--surface); border:1px solid var(--red); border-radius:12px; padding:28px; width:640px; max-height:75vh; overflow-y:auto; box-shadow:0 25px 50px rgba(0,0,0,0.5); }
+    .modal-title { font-size:10px; color:var(--red-soft); letter-spacing:.15em; margin-bottom:18px; display:flex; justify-content:space-between; align-items:center; text-transform:uppercase; }
+    .modal-close { cursor:pointer; color:var(--text-dim); font-size:20px; line-height:1; transition:color 0.15s; }
+    .modal-close:hover { color:var(--red); }
+    .modal-cmd { display:flex; gap:14px; padding:7px 0; border-bottom:1px solid var(--border); font-size:12px; }
+    .modal-cmd:last-child { border-bottom:none; }
+  </style>
+</head>
+<body>
+<div class="content">
+
+  <div class="header">
+    <div class="logo-area">
+      <svg width="52" height="44" viewBox="0 0 52 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="2" y1="34" x2="50" y2="34" stroke="#ff3b3b" stroke-width="0.8" opacity="0.4"/>
+        <path d="M4 37 Q8 35 12 37 Q16 39 20 37 Q24 35 28 37 Q32 39 36 37 Q40 35 44 37 Q48 39 50 37" fill="none" stroke="#ff3b3b" stroke-width="0.7" opacity="0.25"/>
+        <path d="M6 40 Q10 38 14 40 Q18 42 22 40 Q26 38 30 40 Q34 42 38 40 Q42 38 46 40" fill="none" stroke="#ff3b3b" stroke-width="0.5" opacity="0.15"/>
+        <circle cx="26" cy="20" r="9" fill="none" stroke="#ff3b3b" stroke-width="1.4"/>
+        <circle cx="26" cy="20" r="5" fill="#ff3b3b" opacity="0.15"/>
+        <circle cx="26" cy="20" r="2.5" fill="#ff3b3b" opacity="0.9"/>
+        <line x1="26" y1="7"  x2="26" y2="4"  stroke="#ff3b3b" stroke-width="1.2" opacity="0.7"/>
+        <line x1="26" y1="33" x2="26" y2="34" stroke="#ff3b3b" stroke-width="1.2" opacity="0.5"/>
+        <line x1="13" y1="20" x2="10" y2="20" stroke="#ff3b3b" stroke-width="1.2" opacity="0.7"/>
+        <line x1="39" y1="20" x2="42" y2="20" stroke="#ff3b3b" stroke-width="1.2" opacity="0.7"/>
+        <line x1="17.3" y1="11.3" x2="15.2" y2="9.2"  stroke="#ff3b3b" stroke-width="1" opacity="0.6"/>
+        <line x1="34.7" y1="11.3" x2="36.8" y2="9.2"  stroke="#ff3b3b" stroke-width="1" opacity="0.6"/>
+        <line x1="17.3" y1="28.7" x2="15.2" y2="30.8" stroke="#ff3b3b" stroke-width="1" opacity="0.4"/>
+        <line x1="34.7" y1="28.7" x2="36.8" y2="30.8" stroke="#ff3b3b" stroke-width="1" opacity="0.4"/>
+        <ellipse cx="26" cy="38.5" rx="5" ry="2" fill="none" stroke="#ff3b3b" stroke-width="0.6" opacity="0.2"/>
+        <ellipse cx="26" cy="41" rx="3" ry="1.2" fill="none" stroke="#ff3b3b" stroke-width="0.4" opacity="0.12"/>
+      </svg>
+      <div>
+        <div class="brand-name">PROJECT MIRAGE</div>
+        <div class="brand-sub">ACTIVE DECEPTION &amp; THREAT INTELLIGENCE PLATFORM</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="threat-level"><div class="threat-dot"></div>THREAT LEVEL: ELEVATED</div>
+      <div class="live-badge"><div class="pulse"></div>LIVE MONITORING</div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat red"><div class="stat-label">Total Sessions</div><div class="stat-value red" id="total-sessions">—</div><div class="stat-sub" id="sessions-sub">&nbsp;</div></div>
+    <div class="stat amber"><div class="stat-label">Commands Captured</div><div class="stat-value amber" id="total-commands">—</div><div class="stat-sub" id="commands-sub">&nbsp;</div></div>
+    <div class="stat red"><div class="stat-label">Unique Attackers</div><div class="stat-value red" id="unique-ips">—</div><div class="stat-sub" id="ips-sub">&nbsp;</div></div>
+    <div class="stat green"><div class="stat-label">System Status</div><div class="stat-value green">ARMED</div><div class="stat-sub">all systems nominal</div></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title"><span class="panel-title-icon">◈</span> Attacker Origin Map</div>
+    <div class="map-container">
+      <div class="scan-line"></div>
+      <svg id="worldmap" width="100%" height="100%" viewBox="0 0 960 280" preserveAspectRatio="xMidYMid meet"></svg>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <div class="panel-title"><span class="panel-title-icon">◈</span> Attacker Sessions</div>
+      <div id="sessions"><div class="empty">AWAITING INTRUSION...</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title"><span class="panel-title-icon">◈</span> Alert Feed</div>
+      <div id="alerts"><div class="empty">NO ALERTS YET</div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title"><span class="panel-title-icon">◈</span> Captured Commands</div>
+    <div id="commands"><div class="empty">NO COMMANDS CAPTURED YET</div></div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-txt">PROJECT MIRAGE v2.0 · AWS EC2 · INOTIFY + IPTABLES + DOCKER</div>
+    <div class="footer-status"><div class="footer-dot"></div>ALL SYSTEMS OPERATIONAL · AUTO-REFRESH 5s</div>
+  </div>
+
+</div>
+
+<div class="modal" id="cmdModal">
+  <div class="modal-box">
+    <div class="modal-title">
+      <span id="modal-ip">COMMANDS FROM —</span>
+      <span class="modal-close" onclick="closeModal()">✕</span>
+    </div>
+    <div id="modal-commands"></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<script>
+function isRealAttacker(ip) {
+  return ip && !ip.startsWith('172.17.') && !ip.startsWith('172.18.') &&
+         !ip.startsWith('10.') && !ip.startsWith('192.168.') && ip !== 'unknown';
+}
+
+var allData = null;
+var mapDrawn = false;
+
+function openModal(ip) {
+  if (!allData) return;
+  document.getElementById('modal-ip').textContent = 'COMMANDS FROM ' + ip;
+  var cmds = (allData.commands_by_ip && allData.commands_by_ip[ip])
+    ? allData.commands_by_ip[ip] : allData.commands;
+  var box = document.getElementById('modal-commands');
+  if (cmds.length > 0) {
+    box.innerHTML = cmds.map(function(c) {
+      return '<div class="modal-cmd">' +
+        '<span style="color:var(--text-dim);min-width:65px">' + c.time + '</span>' +
+        '<span style="color:var(--red)">$ </span>' +
+        '<span style="color:var(--green)">' + c.command + '</span></div>';
+    }).join('');
+  } else {
+    box.innerHTML = '<div class="empty">NO COMMANDS FROM THIS IP</div>';
+  }
+  document.getElementById('cmdModal').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('cmdModal').classList.remove('active');
+}
+
+document.getElementById('cmdModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+async function drawMap(ips) {
+  if (mapDrawn) return;
+  var svg = d3.select('#worldmap');
+  var width = 960, height = 280;
+  var proj = d3.geoNaturalEarth1().scale(153).translate([width/2, height/2]);
+  var path = d3.geoPath(proj);
+  try {
+    var world = await d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json');
+    svg.append('rect').attr('width', width).attr('height', height).attr('fill', '#0f172a');
+    svg.selectAll('path')
+      .data(topojson.feature(world, world.objects.countries).features)
+      .join('path').attr('d', path)
+      .attr('fill', '#1e293b').attr('stroke', '#334155').attr('stroke-width', 0.6);
+    svg.append('path').datum(d3.geoGraticule()()).attr('d', path)
+      .attr('fill', 'none').attr('stroke', '#1e3a5f').attr('stroke-width', 0.3).attr('opacity', 0.6);
+
+    for (var i = 0; i < ips.length; i++) {
+      var ip = ips[i];
+      if (!isRealAttacker(ip)) continue;
+      try {
+        var geoResp = await fetch('/api/geo/' + ip);
+        if (!geoResp.ok) continue;
+        var geo = await geoResp.json();
+        if (!geo.lat || !geo.lon) continue;
+        var coords = proj([geo.lon, geo.lat]);
+        var cx = coords[0], cy = coords[1];
+        if (!cx || !cy) continue;
+
+        for (var r = 0; r < 3; r++) {
+          (function(ring) {
+            svg.append('circle').attr('cx', cx).attr('cy', cy)
+              .attr('r', 4).attr('fill', 'none')
+              .attr('stroke', '#ef4444').attr('stroke-width', 1.2).attr('opacity', 0.9)
+              .transition().duration(2000).delay(ring * 650).ease(d3.easeLinear)
+              .attr('r', 28).attr('opacity', 0)
+              .on('end', function repeat() {
+                d3.select(this).attr('r', 4).attr('opacity', 0.9)
+                  .transition().duration(2000).delay(ring * 650).ease(d3.easeLinear)
+                  .attr('r', 28).attr('opacity', 0).on('end', repeat);
+              });
+          })(r);
+        }
+
+        svg.append('circle').attr('cx', cx).attr('cy', cy).attr('r', 8).attr('fill', '#ef4444').attr('opacity', 0.15);
+        svg.append('circle').attr('cx', cx).attr('cy', cy).attr('r', 5).attr('fill', '#ef4444').attr('opacity', 1);
+        svg.append('circle').attr('cx', cx).attr('cy', cy).attr('r', 2.5).attr('fill', '#fff');
+
+        var label = geo.city ? geo.city + ', ' + geo.countryCode : ip;
+        svg.append('text').attr('x', cx + 12).attr('y', cy + 4)
+          .attr('fill', '#fca5a5').attr('font-size', '11px')
+          .attr('font-family', 'Share Tech Mono').attr('font-weight', 'bold').text(label);
+        svg.append('text').attr('x', cx + 12).attr('y', cy + 17)
+          .attr('fill', '#94a3b8').attr('font-size', '9px')
+          .attr('font-family', 'Share Tech Mono').text(ip);
+      } catch(e) {}
+    }
+    mapDrawn = true;
+  } catch(e) {
+    svg.append('text').attr('x', 480).attr('y', 140)
+      .attr('text-anchor', 'middle').attr('fill', '#475569')
+      .attr('font-size', '12px').text('MAP DATA UNAVAILABLE');
+  }
+}
+
+async function loadData() {
+  try {
+    var d = await fetch('/api/data').then(function(r) { return r.json(); });
+    allData = d;
+
+    var realSessions = d.sessions.filter(function(s) { return isRealAttacker(s.ip || ''); });
+    var realIPs = d.unique_ips.filter(isRealAttacker);
+
+    document.getElementById('total-sessions').textContent = realSessions.length || 0;
+    document.getElementById('total-commands').textContent = d.total_commands || 0;
+    document.getElementById('unique-ips').textContent = realIPs.length || 0;
+    document.getElementById('sessions-sub').textContent = realSessions.length > 0 ? '\u2191 ' + realSessions.length + ' trapped' : '\u00a0';
+    document.getElementById('commands-sub').textContent = realSessions.length > 0 ? 'across ' + realSessions.length + ' sessions' : '\u00a0';
+    document.getElementById('ips-sub').textContent = realIPs.length > 0 ? realIPs.length + ' countries' : '\u00a0';
+
+    var sc = document.getElementById('sessions');
+    if (realSessions.length > 0) {
+      sc.innerHTML = realSessions.map(function(s) {
+        return '<div class="session-row" onclick="openModal(\'' + s.ip + '\')">' +
+          '<div><div class="session-ip">' + s.ip + '</div>' +
+          '<div class="session-time">' + s.started + '</div>' +
+          '<div class="click-hint">\u2197 Click to view commands</div></div>' +
+          '<div><div class="badge badge-trapped">TRAPPED</div></div></div>';
+      }).join('');
+    } else {
+      sc.innerHTML = '<div class="empty">AWAITING INTRUSION...</div>';
+    }
+
+    var al = document.getElementById('alerts');
+    if (realSessions.length > 0) {
+      al.innerHTML = realSessions.map(function(s) {
+        return '<div class="alert-row"><div class="alert-dot dot-red"></div>' +
+          '<div><div class="alert-title">Honeyfile access detected</div>' +
+          '<div class="alert-meta">' + s.started + '<br>' + s.ip + '</div>' +
+          '<div class="alert-trigger">\u25b6 REDIRECT TRIGGERED \u2192 HONEYPOT</div>' +
+          '</div></div>';
+      }).join('');
+    } else {
+      al.innerHTML = '<div class="empty">NO ALERTS YET</div>';
+    }
+
+    var cb = document.getElementById('commands');
+    if (d.commands.length > 0) {
+      cb.innerHTML = d.commands.map(function(c) {
+        return '<div class="cmd-row"><div class="cmd-time">' + c.time + '</div>' +
+          '<span class="cmd-prompt">$</span>' +
+          '<div class="cmd-text">' + c.command + '</div></div>';
+      }).join('');
+    } else {
+      cb.innerHTML = '<div class="empty">NO COMMANDS CAPTURED YET</div>';
+    }
+
+    if (realIPs.length > 0 && !mapDrawn) drawMap(realIPs);
+  } catch(e) {
+    console.error('Failed to load data:', e);
+  }
+}
+
+loadData();
+</script>
+</body>
+</html>
