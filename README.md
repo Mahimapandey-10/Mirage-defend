@@ -229,7 +229,7 @@ sudo systemctl restart ghost-protocol
 │  Ghost Protocol: ATTACKER confirmed — password auth     │
 │  Ghost Protocol: BLACKLIST — redirecting IP             │
 │  Ghost Protocol: SESSION KILLED — natural disconnect    │
-│  Dashboard: New attacker pin — New Delhi, IN            │
+│  Dashboard: New attacker pin — XXX, ABC(Country)        │
 │  Dashboard: Commands captured — ls, whoami, cat...      │
 │                                                         │
 └─────────────────────────────────────────────────────────┘
