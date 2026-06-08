@@ -19,7 +19,7 @@ Instead of just **blocking** attackers, we let them in, **trap** them inside a f
 
 > *The attacker thinks they're inside your system. They're inside your trap.*
 
----
+
 
 ## 🎯 The Problem
 
@@ -29,11 +29,11 @@ Instead of just **blocking** attackers, we let them in, **trap** them inside a f
 | **Credential Exploitation** | Exposed API keys and database configs are silently weaponised with no interception or tracking |
 | **The Dwell Time Problem** | Attackers move freely inside compromised networks for months before anyone notices |
 
----
+
 
 ## ✅ Our Solution
 
-```
+
 Attacker touches honeyfile
         ↓
 inotify fires → Ghost Protocol detects in milliseconds
@@ -49,7 +49,7 @@ Attacker reconnects → lands in fake server unknowingly
 Every command logged → live dashboard updated in real time
 ```
 
----
+
 
 ## ⚡ Features
 
@@ -60,7 +60,7 @@ Every command logged → live dashboard updated in real time
 - 🗺️ **Live Threat Dashboard** — Flask + D3.js with world map, session tracking, and per-attacker command history
 - 🔒 **Zero Admin Lockout** — Only the attacker's specific IP gets redirected, admin access is never affected
 
----
+
 
 ## 🏗️ Architecture
 
